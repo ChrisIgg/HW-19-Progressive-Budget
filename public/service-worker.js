@@ -1,4 +1,9 @@
-const FILES_TO_CACHE = [];
+const FILES_TO_CACHE = [
+  "/",
+  "/home",
+  "/manifest.json",
+  "/assets/css/style.css",
+];
 
 const STATIC_CACHE = "static-cache-v1";
 
