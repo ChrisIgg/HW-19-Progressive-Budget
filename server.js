@@ -2,11 +2,11 @@ const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const compression = require("compression");
-const path = require('path');
+const path = require("path");
 
-const routes=require('./routes/api');
+const routes = require("./routes/api");
 
-mongodb+srv://insignaresc115:jHAQSyAZ4AfKSti@cluster0.plce3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+// mongodb+srv://insignaresc115:jHAQSyAZ4AfKSti@cluster0.plce3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
 
 const PORT = process.env.PORT || 3000;
 
