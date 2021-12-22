@@ -2,8 +2,13 @@ const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const compression = require("compression");
+const path = require('path');
 
-const PORT = process.envPORT || 3000;
+const routes=require('./routes/api');
+
+mongodb+srv://insignaresc115:jHAQSyAZ4AfKSti@cluster0.plce3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
@@ -15,7 +20,7 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/budget", {
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/budget", {
   useNewUrlParser: true,
   useFindAndModify: false,
 });

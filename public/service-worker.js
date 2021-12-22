@@ -4,6 +4,7 @@ const FILES_TO_CACHE = [
   "/index.js",
   "/styles.css",
   "/dist/manifest.json",
+  "/db.js",
   "/dist/index.bundle.js",
   "https://cdn.jsdelivr.net/npm/chart.js@2.8.0",
 ];
@@ -42,22 +43,51 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-self.addEventListener("fetch", (event) => {
-  if (event.request.url.startsWith(self.location.origin)) {
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
+// self.addEventListener("fetch", (event) => {
+//   if (event.request.url.startsWith(self.location.origin)) {
+//     event.respondWith(
+//       caches.match(event.request).then((cachedResponse) => {
+//         if (cachedResponse) {
+//           return cachedResponse;
+//         }
 
-        return caches.open(RUNTIME_CACHE).then((cache) => {
-          return fetch(event.request).then((response) => {
-            return cache.put(event.request, response.clone()).then(() => {
-              return response;
-            });
+//         return caches.open(RUNTIME_CACHE).then((cache) => {
+//           return fetch(event.request).then((response) => {
+//             return cache.put(event.request, response.clone()).then(() => {
+//               return response;
+//             });
+//           });
+//         });
+//       })
+//     );
+//   }
+// });
+
+self.addEventListener("fetch", (event) => {
+  // non GET requests are not cached and requests to other origins are not cached
+  if (
+    event.request.method !== "GET" ||
+    !event.request.url.startsWith(self.location.origin)
+  ) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // use cache first for all other requests for performance
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      // request is not in cache. make network request and cache the response
+      return caches.open(RUNTIME_CACHE).then((cache) => {
+        return fetch(event.request).then((response) => {
+          return cache.put(event.request, response.clone()).then(() => {
+            return response;
           });
         });
-      })
-    );
-  }
+      });
+    })
+  );
 });
